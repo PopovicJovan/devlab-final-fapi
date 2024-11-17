@@ -4,9 +4,8 @@ from fastapi import APIRouter
 
 from app.exceptions import ValidationError
 from app.schemas import auth, user
-from app.models.user import User
 from app.database.database import db
-from app.views.auth import AuthView
+from app.views.Auth.auth import AuthView
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

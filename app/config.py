@@ -1,8 +1,7 @@
 from typing import Union
 
 from pydantic_settings import BaseSettings
-from dotenv import load_dotenv
-load_dotenv()
+
 
 class Settings(BaseSettings):
 
@@ -11,6 +10,7 @@ class Settings(BaseSettings):
     DB_HOST: Union[str, None]
     DB_NAME: Union[str, None]
     DB_PORT: Union[str, None]
+    SECRET_KEY: Union[str, None]
 
 
     @property
