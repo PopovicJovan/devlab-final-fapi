@@ -7,17 +7,18 @@ import bcrypt
 from app.views.Auth.jwt import JWTHelper
 
 
-
 class AuthView:
     @classmethod
     def register(cls, db: Session, userdata: Register) -> User:
         user = UserView.get_user_by_email(db=db, email=userdata.email)
         if user is not None:
             raise ValidationError(detail='Email already in use')
+
         password = userdata.password
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         user = User(**userdata.model_dump())
         user.password = hashed_password
+
         db.add(user)
         return user
 

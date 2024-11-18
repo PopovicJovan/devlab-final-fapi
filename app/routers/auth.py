@@ -1,7 +1,5 @@
 from typing import Union
-
 from fastapi import APIRouter
-
 from app.exceptions import ValidationError
 from app.schemas import auth, user
 from app.database.database import db
