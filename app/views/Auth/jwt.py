@@ -31,7 +31,7 @@ class JWTHelper:
             raise exc.InvalidToken
 
     @classmethod
-    def verify_authorization(cls, Authorization: str = Header(...)) -> str:
+    def verify_authorization(cls, Authorization: str) -> str:
         if not Authorization.startswith("Bearer "):
             raise exc.InvalidToken
         token = Authorization.split(" ")[1]

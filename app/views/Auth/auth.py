@@ -11,8 +11,11 @@ class AuthView:
     @classmethod
     def register(cls, db: Session, userdata: Register) -> User:
         user = UserView.get_user_by_email(db=db, email=userdata.email)
-        if user is not None:
+        if user:
             raise ValidationError(detail='Email already in use')
+        user = UserView.get_user_by_username(db=db, username=userdata.username)
+        if user:
+            raise ValidationError(detail='Username already in use')
 
         password = userdata.password
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -24,13 +27,14 @@ class AuthView:
 
     @classmethod
     def login(cls, db: Session, userdata: Login) -> (str, User):
-        user = UserView.get_user_by_email(db=db, email=userdata.email)
+        user = UserView.get_user_by_username(db=db, username=userdata.username)
         if user is None:
             raise ValidationError(detail='Invalid credentials', status_code=400)
         if not bcrypt.checkpw(userdata.password.encode('utf-8'), user.password.encode('utf-8')):
             raise ValidationError(detail='Invalid credentials', status_code=400)
         userdata = {
-            "email": userdata.email
+            "username": user.username,
+            "email": user.email
         }
         token = JWTHelper.token_create(user_data=userdata)
         return token, user

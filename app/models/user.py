@@ -10,7 +10,7 @@ class User(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String(32))
-    email: Mapped[str] = mapped_column(String(64))
+    username: Mapped[str] = mapped_column(String(32), unique=True)
+    email: Mapped[str] = mapped_column(String(64), unique=True)
     password: Mapped[str] = mapped_column(String(256))
     created_at: Mapped[datetime] = mapped_column(DateTime, insert_default=func.now())
