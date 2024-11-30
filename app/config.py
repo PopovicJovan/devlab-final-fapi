@@ -12,6 +12,13 @@ class Settings(BaseSettings):
     DB_PORT: Union[str, None]
     SECRET_KEY: Union[str, None]
 
+    MAIL_USERNAME: Union[str, None]
+    MAIL_PASSWORD: Union[str, None]
+    MAIL_FROM: Union[str, None]
+    MAIL_PORT: Union[str, int]
+    MAIL_SERVER: Union[str, None]
+    MAIL_FROM_NAME: Union[str, None]
+
 
     @property
     def db_url(self) -> str:

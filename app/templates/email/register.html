@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #FF5733;
+        }
+        p {
+            font-size: 16px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hello, {{ user.username }}!</h1>
+        <p>We wanted to inform you that a new account has been registered using your email address on our platform.</p>
+
+        <p><strong>Registration Details:</strong></p>
+        <ul>
+            <li><strong>Time of Registration:</strong> {{ time }}</li>
+            <li><strong>IP Address:</strong> {{ ip_address }}</li>
+        </ul>
+
+        <p>If you did not register this account, please contact our support immediately.</p>
+
+        <div class="footer">
+            <p>Best regards,</p>
+            <p>The Team</p>
+            <p>If you have any questions, feel free to contact us.</p>
+        </div>
+    </div>
+</body>
+</html>
