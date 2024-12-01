@@ -1,18 +1,22 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.security import OAuth2PasswordRequestForm
+from starlette.background import BackgroundTasks
+
 from app.exceptions import ValidationError
 from app.schemas import auth, user
 from app.database.database import db
 from app.schemas.auth import Login
 from app.views.Auth.auth import AuthView
+from app.views.mail import MailView
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=user.User)
-def register(db: db, userdata: auth.Register):
+async def register(db: db, userdata: auth.Register, request: Request, bt: BackgroundTasks):
     try:
         user = AuthView.register(db=db, userdata=userdata)
         db.commit()
         db.refresh(user)
+        bt.add_task(MailView.register_email, user, request)
         return user
     except ValidationError as e:
         raise e
