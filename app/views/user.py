@@ -1,7 +1,10 @@
+from typing import Union
+
 from fastapi import UploadFile
 import uuid
 import shutil
 import os
+import base64
 import app.exceptions as exc
 from sqlalchemy.orm import Session
 from app.views.Auth.jwt import JWTHelper
@@ -9,6 +12,7 @@ from app.models.user import User
 
 
 class UserView:
+    IMAGE_ROOT = "./app/public/images/users"
 
     @classmethod
     def get_user_by_email(cls, db: Session, email: str) -> User:
@@ -31,16 +35,26 @@ class UserView:
 
     @classmethod
     def user_upload_photo(cls, user: User, picture: UploadFile) -> None:
-        IMAGE_ROOT = "./app/public/images/users"
-        if not os.path.exists(os.path.abspath(IMAGE_ROOT)):
-            os.makedirs(os.path.abspath(IMAGE_ROOT))
+        if not os.path.exists(os.path.abspath(cls.IMAGE_ROOT)):
+            os.makedirs(os.path.abspath(cls.IMAGE_ROOT))
         if user.picture:
-            image_path = f"{IMAGE_ROOT}/{user.picture}"
+            image_path = f"{cls.IMAGE_ROOT}/{user.picture}"
             if os.path.exists(image_path):
                 os.remove(image_path)
         unique_filename = f"{uuid.uuid4()}.jpg"
-        image_path = f"{str(IMAGE_ROOT)}/{unique_filename}"
+        image_path = f"{str(cls.IMAGE_ROOT)}/{unique_filename}"
         with open(image_path, "wb") as f:
             shutil.copyfileobj(picture.file, f)
 
         user.picture = unique_filename
+
+    @classmethod
+    def get_user_photo(cls, user: User) -> Union[None, str]:
+        if not user.picture:
+            return None
+
+        image_path = f"{cls.IMAGE_ROOT}/{user.picture}"
+        with open(image_path, "rb") as image:
+            image = image.read()
+
+        return base64.b64encode(image).decode("utf-8")

@@ -16,6 +16,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 def get_user_by_token(db: database, token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         current_user = UserView.get_user_by_token(db, token)
+        picture = UserView.get_user_photo(current_user)
+        current_user.picture = f"data:image/jpeg;base64,{picture}"
         return current_user
     except (exc.TokenExpired, exc.InvalidToken, exc.UserNotFound) as e:
         raise e
