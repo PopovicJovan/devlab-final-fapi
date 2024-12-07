@@ -17,6 +17,7 @@ class Register(BaseClass):
 class Login(BaseClass):
     model_config = ConfigDict(from_attributes=True)
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str = "Bearer"

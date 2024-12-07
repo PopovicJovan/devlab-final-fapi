@@ -6,6 +6,7 @@ from app.config import Settings
 from app.models.user import User
 settings = Settings()
 
+
 class MailView:
     conf = ConnectionConfig(
         MAIL_USERNAME=settings.MAIL_USERNAME,

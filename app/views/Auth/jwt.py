@@ -1,4 +1,3 @@
-from fastapi import Header
 from app.config import Settings
 from datetime import datetime, timezone, timedelta
 import jwt

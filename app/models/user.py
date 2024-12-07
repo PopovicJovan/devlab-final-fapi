@@ -12,4 +12,5 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(64), unique=True)
     password: Mapped[str] = mapped_column(String(256))
     admin: Mapped[bool] = mapped_column(Boolean, default=False)
+    picture: Mapped[str] = mapped_column(String(256), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, insert_default=func.now())
