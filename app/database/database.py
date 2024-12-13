@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from app.config import Settings
 from fastapi import Depends
 from dotenv import load_dotenv
+from app.models import *
 
 load_dotenv()
 settings = Settings()
