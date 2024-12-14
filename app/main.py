@@ -1,8 +1,7 @@
-from typing import Union
-
 from fastapi import FastAPI
 from app.routers.auth import router as r1
 from app.routers.user import router as r2
+from app.routers.status import router as r3
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()
@@ -23,4 +22,5 @@ app.add_middleware(
 
 app.include_router(r1)
 app.include_router(r2)
+app.include_router(r3)
 

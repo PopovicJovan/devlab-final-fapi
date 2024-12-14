@@ -6,8 +6,8 @@
 
 Before you start, ensure you have the following installed on your machine:
 
-- Python 3.8 or higher
-- pip (Python package manager)
+- Python 3.12 or higher
+- pip 22.0.4 or higher (Python package manager)
 - A database system compatible with your project
 
 ## Setting Up the Project Locally
