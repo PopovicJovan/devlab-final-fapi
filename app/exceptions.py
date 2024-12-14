@@ -42,3 +42,17 @@ class TokenExpired(TokenError):
 class InvalidToken(TokenError):
     def __init__(self):
         super().__init__(detail="Invalid token")
+
+class ModelInUse(BaseException):
+    def __init__(self,
+                 detail: str = "Model already exists",
+                 status_code: int = 422,
+                 additional_info: Optional[str] = None):
+        super().__init__(detail=detail, status_code=status_code, additional_info=additional_info)
+
+class ModelNotFound(BaseException):
+    def __init__(self,
+                 detail: str = "Model Not Found",
+                 status_code: int = 404,
+                 additional_info: Optional[str] = None):
+        super().__init__(detail=detail, status_code=status_code, additional_info=additional_info)
