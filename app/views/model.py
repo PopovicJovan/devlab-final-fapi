@@ -29,4 +29,11 @@ class ModelView:
     def get_all_model(cls, db: Session) -> list[Model]:
         return db.query(Model).all()
 
+    @classmethod
+    def get_model_by_id(cls, db: Session, id: int):
+        model = db.query(Model).filter(Model.id == id).first()
+        if not model:
+            raise ex.ModelNotFound
+        return model
+
 
