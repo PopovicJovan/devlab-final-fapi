@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from app.models.status import Status
 from app.schemas.status import StatusCreateUpdate
 from app import exceptions as ex

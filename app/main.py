@@ -1,15 +1,12 @@
 from fastapi import FastAPI
-from app.routers.auth import router as r1
-from app.routers.user import router as r2
-from app.routers.status import router as r3
+from app.routers import __all__ as all_routers
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from importlib import import_module
 load_dotenv()
 app = FastAPI()
 
-origins = [
-# Custom origins
-]
+origins = []  # custom origins
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,8 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-app.include_router(r1)
-app.include_router(r2)
-app.include_router(r3)
-
+for module_name in all_routers:
+    module = import_module(f"app.routers.{module_name}")
+    app.include_router(module.router)
