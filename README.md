@@ -52,3 +52,4 @@ alembic upgrade head
 ```bash
 fastapi dev app/main.py
 ```
+![er_fastapi](https://github.com/user-attachments/assets/5c168237-2056-480a-bb7e-c932415acca5)
