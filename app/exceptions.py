@@ -56,3 +56,10 @@ class ModelNotFound(BaseException):
                  status_code: int = 404,
                  additional_info: Optional[str] = None):
         super().__init__(detail=detail, status_code=status_code, additional_info=additional_info)
+
+class ForbidenException(BaseException):
+    def __init__(self,
+                 detail: str = "Forbidden",
+                 status_code: int = 403,
+                 additional_info: Optional[str] = None):
+        super().__init__(detail=detail, status_code=status_code, additional_info=additional_info)

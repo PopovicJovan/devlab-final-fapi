@@ -1,3 +1,5 @@
+from typing import List, Type
+
 from sqlalchemy.orm import Session
 
 from app.models import Yacht
@@ -44,5 +46,17 @@ class YachtView:
         if not yacht:
             raise ex.ModelNotFound("Yacht not found")
         return yacht
+
+    @classmethod
+    def get_all_yacht(cls, db: Session) -> list[Type[Yacht]]:
+        return db.query(Yacht).all()
+
+    @classmethod
+    def yacht_delete(cls, db: Session, id: int):
+        try:
+            yacht = cls.get_yacht_by_id(db, id)
+            db.delete(yacht)
+        except ex.ModelNotFound as e:
+            raise e
 
 

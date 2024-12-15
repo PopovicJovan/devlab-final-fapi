@@ -3,6 +3,9 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict
 from datetime import date, datetime
 
+from app.schemas.model import Model
+from app.schemas.status import Status
+
 
 class YachtBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -27,8 +30,8 @@ class YachtUpdate(YachtBase):
 
 class Yacht(YachtBase):
     id: int
-    status_id: int
-    model_id: int
+    status: Status
+    model: Model
     name: str
     year: date
     sale_price: float
