@@ -31,3 +31,11 @@ def upload_user_picture(db: database, picture: UploadFile, token: Annotated[str,
         db.commit()
     except (exc.TokenExpired, exc.InvalidToken, exc.UserNotFound) as e:
         raise e
+
+
+def is_admin(db: database, token: Annotated[str, Depends(oauth2_scheme)]) -> bool | None:
+    try:
+        current_user = UserView.get_user_by_token(db, token)
+        return UserView.is_admin(current_user)
+    except (exc.TokenExpired, exc.InvalidToken, exc.ForbidenException) as e:
+        raise e

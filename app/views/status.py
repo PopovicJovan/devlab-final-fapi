@@ -28,3 +28,10 @@ class StatusView:
     @classmethod
     def get_all_status(cls, db: Session) -> List[type[Status]]:
         return db.query(Status).all()
+
+    @classmethod
+    def get_status_by_id(cls, db: Session, id: int) -> Status:
+        status =  db.query(Status).filter(Status.id == id).first()
+        if not status:
+            raise ex.ModelNotFound(detail="Status not found")
+        return status

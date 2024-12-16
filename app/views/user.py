@@ -5,8 +5,13 @@ import uuid
 import shutil
 import os
 import base64
+
+from fastapi.params import Depends
+
 import app.exceptions as exc
 from sqlalchemy.orm import Session
+
+from app.exceptions import ValidationError
 from app.views.Auth.jwt import JWTHelper
 from app.models.user import User
 
@@ -58,3 +63,10 @@ class UserView:
             image = image.read()
 
         return base64.b64encode(image).decode("utf-8")
+
+    @classmethod
+    def is_admin(cls, user: User) -> None | bool:
+        if not user.admin:
+            raise exc.ForbidenException(detail="You are not admin")
+        return True
+
