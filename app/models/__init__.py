@@ -4,5 +4,7 @@ from app.models.model import Model
 from app.models.yacht import Yacht
 from app.models.rent import Rent
 from app.models.review import Review
+from app.models.sale import Sale
 
-__all__ = ["User", "Status", "Model", "Yacht", "Rent", "Review"]
+__all__ = ["User", "Status", "Model", "Yacht", "Rent", "Review", "Sale"]
+

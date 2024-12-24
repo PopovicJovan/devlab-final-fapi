@@ -63,3 +63,10 @@ class ForbidenException(BaseException):
                  status_code: int = 403,
                  additional_info: Optional[str] = None):
         super().__init__(detail=detail, status_code=status_code, additional_info=additional_info)
+
+class NotAvailable(BaseException):
+    def __init__(self,
+                 detail: str = "Model is not available",
+                 status_code: int = 422,
+                 additional_info: Optional[str] = None):
+        super().__init__(detail=detail, status_code=status_code, additional_info=additional_info)

@@ -5,5 +5,7 @@ import app.routers.model
 import app.routers.yacht
 import app.routers.rent
 import app.routers.review
+import app.routers.sale
 
-__all__ = ["auth", "user", "status", "model", "yacht","rent", "review"]
+__all__ = ["auth", "user", "status", "model", "yacht","rent", "review",  "sale"]
+

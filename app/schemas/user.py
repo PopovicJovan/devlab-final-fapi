@@ -1,10 +1,11 @@
+from __future__ import annotations
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
 
 
 class BaseClass(BaseModel):
-    pass
+    model_config = ConfigDict(from_attributes=True)
 
 class User(BaseModel):
     id: int
@@ -13,4 +14,8 @@ class User(BaseModel):
     picture: Optional[str] = None
     created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+class UserWithSales(User):
+    sales: List[Sale]
+
+from app.schemas.sale import Sale
+Sale.model_rebuild()
