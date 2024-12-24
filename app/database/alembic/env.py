@@ -4,6 +4,8 @@ from app.config import Settings
 from logging.config import fileConfig
 from app.models.user import User
 from app.database.database import Base
+from app.models.rent import Rent
+from app.models.review import Review
 
 settings = Settings()
 config = context.config
