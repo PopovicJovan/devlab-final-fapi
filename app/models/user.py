@@ -1,7 +1,8 @@
 from datetime import datetime
 from sqlalchemy import Integer, String, DateTime, func, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.database import Base
+from typing import List
 
 
 class User(Base):
@@ -14,3 +15,5 @@ class User(Base):
     admin: Mapped[bool] = mapped_column(Boolean, default=False)
     picture: Mapped[str] = mapped_column(String(256), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, insert_default=func.now())
+
+    sales: Mapped[List["Sale"]] = relationship("Sale", back_populates="user")
