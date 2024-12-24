@@ -17,7 +17,7 @@ def get_user_by_token(db: database, token: Annotated[str, Depends(oauth2_scheme)
     try:
         current_user = UserView.get_user_by_token(db, token)
         picture = UserView.get_user_photo(current_user)
-        current_user.picture = f"data:image/jpeg;base64,{picture}"
+        current_user.picture = f"data:image/jpeg;base64,{picture}" if picture else None
         return current_user
     except (exc.TokenExpired, exc.InvalidToken, exc.UserNotFound) as e:
         raise e

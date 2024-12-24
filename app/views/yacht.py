@@ -50,21 +50,12 @@ class YachtView:
     @classmethod
     def get_yacht_by_id(cls, db: Session, id: int) -> Yacht:
         yacht = db.query(Yacht).filter(Yacht.id == id).first()
-        if not yacht:
-            raise ex.ModelNotFound("Yacht not found")
-        picture = YachtView.get_yacht_photo(yacht)
-        if picture:
-            yacht.picture=f"data:image/jpeg;base64,{picture}"
-        else:
-            yacht.picture=None
+        if not yacht: raise ex.ModelNotFound("Yacht not found")
         return yacht
 
     @classmethod
     def get_all_yacht(cls, db: Session) -> list[Yacht]:
         yachts= db.query(Yacht).all()
-        for yacht in yachts:
-            picture = cls.get_yacht_photo(yacht)
-            yacht.picture=f"data:image/jpeg;base64,{picture}" if picture else None
         return yachts
 
 
@@ -77,16 +68,9 @@ class YachtView:
             raise e
 
     @classmethod
-    def yacht_upload_photo(cls, db: Session, yacht_id: int, current_user:User, picture: UploadFile) -> None:
-        if not current_user.admin:
-            raise PermissionError("You are not authorised to use this route!")
-        
+    def yacht_upload_photo(cls, db: Session, yacht: Yacht, picture: UploadFile) -> None:
         if not os.path.exists(os.path.abspath(cls.IMAGE_ROOT)):
             os.makedirs(os.path.abspath(cls.IMAGE_ROOT))
-
-        yacht = db.execute(select(Yacht).where(Yacht.id == yacht_id)).scalar_one_or_none()
-        if not yacht:
-            raise ValueError("Yacht not found")
 
         if yacht.picture:
             old_picture = f"{cls.IMAGE_ROOT}/{yacht.picture}"
