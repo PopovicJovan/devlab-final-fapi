@@ -1,10 +1,8 @@
 from fastapi import APIRouter
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
-
 from app.database.database import database
 from app.schemas.sale import Sale as SaleSchema
-from app.schemas.status import StatusCreateUpdate
 from app.views.sale import SaleView
 from app import exceptions as exc
 from typing import List, Annotated

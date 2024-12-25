@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 import app.exceptions as ex
-from app.schemas.model import ModelCreate, ModelUpdate
+from app.schemas.model import ModelCreate
 from app.models.model import Model
 
 class ModelView:

@@ -1,13 +1,12 @@
 from fastapi import APIRouter, UploadFile, HTTPException
 from fastapi.params import Depends
-from app.database.database import database, get_db
+from app.database.database import database
 from app.schemas.yacht import Yacht, YachtCreate, YachtUpdate
 from app import exceptions as ex
 from app.views.yacht import YachtView
 from typing import List
 from app.routers import user as user_router
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
 import app.exceptions as exc
 
 
@@ -73,7 +72,7 @@ def get_yacht(id: int, db: database):
         raise e
 
 @router.post("/{id}/upload-image", response_model=None, dependencies=[Depends(user_router.is_admin)])
-def yacht_upload_image(id: int, picture: UploadFile, db: Session = Depends(get_db)):
+def yacht_upload_image(id: int, picture: UploadFile, db: database):
     try:
         yacht = YachtView.get_yacht_by_id(db, id)
         YachtView.yacht_upload_photo(db, yacht, picture)

@@ -1,7 +1,4 @@
-from typing import List, Type
-
 from sqlalchemy.orm import Session
-
 from app.models import Yacht
 from app.schemas.yacht import YachtCreate, YachtUpdate
 from app.views.model import ModelView
@@ -12,8 +9,6 @@ import uuid
 import shutil
 import os
 import base64
-from app.models.user import User
-from sqlalchemy import select
 from typing import Union
 
 class YachtView:
@@ -55,8 +50,7 @@ class YachtView:
 
     @classmethod
     def get_all_yacht(cls, db: Session) -> list[Yacht]:
-        yachts= db.query(Yacht).all()
-        return yachts
+        return db.query(Yacht).all()
 
 
     @classmethod

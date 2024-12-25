@@ -1,17 +1,11 @@
 from typing import Union
-
 from fastapi import UploadFile
 import uuid
 import shutil
 import os
 import base64
-
-from fastapi.params import Depends
-
 import app.exceptions as exc
 from sqlalchemy.orm import Session
-
-from app.exceptions import ValidationError
 from app.views.Auth.jwt import JWTHelper
 from app.models.user import User
 
