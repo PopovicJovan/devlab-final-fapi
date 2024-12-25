@@ -13,6 +13,9 @@ class RentView:
         try: yacht = YachtView.get_yacht_by_id(db, rent_data.yacht_id)
         except exc.ModelNotFound as e: raise e
 
+        if not YachtView.yacht_is_available_now_for_rent(db, yacht):
+            exc.NotAvailable("Yacht is not available for rent at the moment")
+
         overlapping_rent = db.execute(
             select(Rent).where(
                 Rent.yacht_id == rent_data.yacht_id,
@@ -30,8 +33,6 @@ class RentView:
         start_date = rent_data.start_date
         end_date = rent_data.end_date
         days = (end_date - start_date).days
-        # if days <= 0:
-        #     raise ValueError("Invalid date range")
 
         total_price = days * yacht.rent_price
         user_id=current_user.id

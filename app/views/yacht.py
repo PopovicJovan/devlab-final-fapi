@@ -89,3 +89,19 @@ class YachtView:
             image = image.read()
 
         return base64.b64encode(image).decode("utf-8")
+
+    @classmethod
+    def yacht_is_available_now_for_rent(cls, db: Session, yacht: Yacht):
+        available_statuses = [
+            StatusView.get_status(db, "available for rent and sale").id,
+            StatusView.get_status(db, "available for rent").id
+        ]
+        return yacht.status_id in available_statuses
+
+    @classmethod
+    def yacht_is_available_now_for_sale(cls, db: Session, yacht: Yacht):
+        available_statuses = [
+            StatusView.get_status(db, "available for rent and sale").id,
+            StatusView.get_status(db, "available for sale").id
+        ]
+        return yacht.status_id in available_statuses

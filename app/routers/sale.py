@@ -26,7 +26,7 @@ def sale_create(db: database, yacht_id: int, token: Annotated[str, Depends(oauth
         db.refresh(sale)
 
         return sale
-    except (exc.TokenExpired, exc.InvalidToken, exc.ModelNotFound) as e:
+    except (exc.TokenExpired, exc.InvalidToken, exc.ModelNotFound, exc.NotAvailable) as e:
         raise e
 
 
