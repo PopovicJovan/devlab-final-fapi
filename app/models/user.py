@@ -17,3 +17,4 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, insert_default=func.now())
 
     sales: Mapped[List["Sale"]] = relationship("Sale", back_populates="user")
+    rents: Mapped[List["Rent"]] = relationship("Rent", back_populates="user")

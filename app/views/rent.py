@@ -2,19 +2,19 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, and_ , or_
 from app.models.rent import Rent
 from app.models.user import User
-from app.schemas.rent import RentCreate, RentResponse
+from app.schemas.rent import RentCreate, Rent
 from app.views.yacht import YachtView
 import app.exceptions as exc
 
 
 class RentView:
     @classmethod
-    def create_rent(cls, db: Session, rent_data: RentCreate, current_user:User)->RentResponse:
+    def create_rent(cls, db: Session, rent_data: RentCreate, current_user:User)->Rent:
         try: yacht = YachtView.get_yacht_by_id(db, rent_data.yacht_id)
         except exc.ModelNotFound as e: raise e
 
         if not YachtView.yacht_is_available_now_for_rent(db, yacht):
-            exc.NotAvailable("Yacht is not available for rent at the moment")
+            raise exc.NotAvailable("Yacht is not available for rent at the moment")
 
         overlapping_rent = db.execute(
             select(Rent).where(
@@ -40,7 +40,7 @@ class RentView:
         db.add(new_rent)
         db.commit()
         db.refresh(new_rent)
-        return RentResponse.model_validate(new_rent)
+        return Rent.model_validate(new_rent)
     
 
     @classmethod

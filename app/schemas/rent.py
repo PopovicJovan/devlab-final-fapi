@@ -26,7 +26,7 @@ class RentCreate(RentBase):
             raise ValueError('start_date must be after current date')
         return self
 
-class RentResponse(RentBase):
+class Rent(RentBase):
     id: int
     user_id: int
     total_price: float

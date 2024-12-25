@@ -12,7 +12,7 @@ router = APIRouter(prefix="/user", tags=["user"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-@router.get("/show", response_model=user.User)
+@router.get("/show", response_model=user.UserWithSalesAndRents)
 def get_user_by_token(db: database, token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         current_user = UserView.get_user_by_token(db, token)
