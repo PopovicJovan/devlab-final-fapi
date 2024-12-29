@@ -13,7 +13,7 @@ router = APIRouter(prefix="/status", tags=["status"])
 def status_create(db: database, statusData: StatusCreateUpdate):
     # names = ["rented", "sold",
     #           "available for rent",
-    #           "available for sell",
+    #           "available for sale",
     #           "available for rent and sale",
     #           "unavailable"]
     # for name in names:

@@ -28,7 +28,7 @@ class StatusCommand:
             else:
                 if (yacht.status_id in
                         [StatusView.get_status(db, "available for rent").id,
-                         StatusView.get_status(db, "available for sell").id]):
+                         StatusView.get_status(db, "available for sale").id]):
                     continue
                 yacht.status_id = StatusView.get_status(db, "available for rent and sale").id
             db.commit()
