@@ -12,6 +12,7 @@ class User(BaseModel):
     email: str
     username: str
     picture: Optional[str] = None
+    admin: bool
     created_at: datetime
 
 class UserWithSalesAndRents(User):
