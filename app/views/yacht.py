@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models import Yacht
-from app.schemas.yacht import YachtCreate, YachtUpdate
+from app.models import Yacht, Model
+from app.schemas.yacht import YachtCreate, YachtUpdate, YachtFilter
 from app.views.model import ModelView
 from app.views.status import StatusView
 from app import exceptions as ex
@@ -11,8 +11,10 @@ import os
 import base64
 from typing import Union
 
+
 class YachtView:
     IMAGE_ROOT = "./app/public/images/yachts"
+
     @classmethod
     def yacht_create(cls, db: Session, yachtData: YachtCreate) -> Yacht:
         try:
@@ -49,9 +51,34 @@ class YachtView:
         return yacht
 
     @classmethod
-    def get_all_yacht(cls, db: Session) -> list[Yacht]:
-        return db.query(Yacht).all()
+    def get_all_yacht(cls, db: Session, filters:YachtFilter) -> list[Yacht]:
+        name = filters.name
+        model_id = filters.model_id
+        minLength = filters.minLength
+        maxLength = filters.maxLength
+        minWidth = filters.minWidth
+        maxWidth = filters.maxWidth
+        minPrice = filters.minPrice
+        maxPrice = filters.maxPrice
 
+        query = db.query(Yacht)
+        if name:
+            query = query.filter(Yacht.name.ilike(f"%{name}%"))
+        if model_id:
+            query = query.filter(Yacht.model_id == model_id)
+        if minLength:
+            query = query.filter(Yacht.model.has(Model.length >= minLength))
+        if maxLength:
+            query = query.filter(Yacht.model.has(Model.length <= maxLength))
+        if minWidth:
+            query = query.filter(Yacht.model.has(Model.width >= minWidth))
+        if maxWidth:
+            query = query.filter(Yacht.model.has(Model.width <= maxWidth))
+        if minPrice:
+            query = query.filter(Yacht.sale_price >= minPrice)
+        if maxPrice:
+            query = query.filter(Yacht.sale_price <= maxPrice)
+        return query.all()
 
     @classmethod
     def yacht_delete(cls, db: Session, id: int):

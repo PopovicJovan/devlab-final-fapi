@@ -1,7 +1,8 @@
-from typing import Optional
-
+from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
 from datetime import date, datetime
+
+from sqlalchemy import Integer
 
 from app.schemas.model import Model
 from app.schemas.status import Status
@@ -39,3 +40,19 @@ class Yacht(YachtBase):
     description: str
     picture: Optional[str] = None
     created_at: datetime
+
+class YachtListResponse(BaseModel):
+    current_page: int = 0
+    total_pages: int = 0
+    yachts: List[Yacht]
+
+class YachtFilter(BaseModel):
+    name: Optional[str] = ""
+    model_id: Optional[str] = None
+    page: Optional[int] = 1
+    minLength: Optional[float] = 0
+    maxLength: Optional[float] = 100
+    minWidth: Optional[float] = 0
+    maxWidth: Optional[float] = 100
+    minPrice: Optional[float] = 0
+    maxPrice: Optional[float] = 10**10

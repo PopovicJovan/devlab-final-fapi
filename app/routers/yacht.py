@@ -1,10 +1,9 @@
 from fastapi import APIRouter, UploadFile, HTTPException
 from fastapi.params import Depends
 from app.database.database import database
-from app.schemas.yacht import Yacht, YachtCreate, YachtUpdate
+from app.schemas.yacht import Yacht, YachtCreate, YachtUpdate, YachtListResponse, YachtFilter
 from app import exceptions as ex
 from app.views.yacht import YachtView
-from typing import List
 from app.routers import user as user_router
 from fastapi.security import OAuth2PasswordBearer
 import app.exceptions as exc
@@ -48,17 +47,29 @@ def yacht_delete(id: int, db: database):
         return None
     except ex.ModelNotFound as e:
         raise e
+import logging
 
-@router.get("", response_model=List[Yacht])
-def get_all_yacht(db: database):
+# Postavljanje osnovne konfiguracije logera
+logging.basicConfig(
+    level=logging.DEBUG,  # Nivo logovanja (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Format loga
+    handlers=[logging.StreamHandler()]  # Izlaz na terminal
+)
+@router.get("", response_model=YachtListResponse)
+def get_all_yacht(db: database, filters: YachtFilter = Depends()):
+    logging.info(filters)
     try:
-        yachts = YachtView.get_all_yacht(db)
-        for yacht in yachts:
+        page = filters.page
+        yachts = YachtView.get_all_yacht(db, filters)
+        pag_yachts = yachts[(page-1)*6:page*6]
+        total_pages = (len(yachts) // 6) + int(len(yachts) % 6 != 0)
+        for yacht in pag_yachts:
             picture = YachtView.get_yacht_photo(yacht)
             yacht.picture=f"data:image/jpeg;base64,{picture}" if yacht.picture else None
-        return yachts
+        return YachtListResponse(yachts=pag_yachts, total_pages=total_pages, current_page=page)
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
+        # raise HTTPException(status_code=500, detail="Internal server error")
+        raise e
 
 
 @router.get("/{id}", response_model=Yacht)
