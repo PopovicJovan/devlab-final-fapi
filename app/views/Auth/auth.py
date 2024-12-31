@@ -34,7 +34,8 @@ class AuthView:
             raise ValidationError(detail='Invalid credentials', status_code=400)
         userdata = {
             "username": user.username,
-            "email": user.email
+            "email": user.email,
+            "admin": user.admin
         }
         token = JWTHelper.token_create(user_data=userdata)
         return token, user
