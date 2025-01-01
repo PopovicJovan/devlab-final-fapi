@@ -1,12 +1,15 @@
 from fastapi import APIRouter, UploadFile, HTTPException
 from fastapi.params import Depends
 from app.database.database import database
+from app.schemas.rent import RentBase, RentDates
 from app.schemas.yacht import Yacht, YachtCreate, YachtUpdate, YachtListResponse, YachtFilter
 from app import exceptions as ex
+from app.views.rent import RentView
 from app.views.yacht import YachtView
 from app.routers import user as user_router
 from fastapi.security import OAuth2PasswordBearer
 import app.exceptions as exc
+from typing import List
 
 
 router = APIRouter(prefix="/yacht", tags=["yacht"])
@@ -47,17 +50,10 @@ def yacht_delete(id: int, db: database):
         return None
     except ex.ModelNotFound as e:
         raise e
-import logging
 
-# Postavljanje osnovne konfiguracije logera
-logging.basicConfig(
-    level=logging.DEBUG,  # Nivo logovanja (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Format loga
-    handlers=[logging.StreamHandler()]  # Izlaz na terminal
-)
+
 @router.get("", response_model=YachtListResponse)
 def get_all_yacht(db: database, filters: YachtFilter = Depends()):
-    logging.info(filters)
     try:
         page = filters.page
         yachts = YachtView.get_all_yacht(db, filters)
@@ -68,8 +64,7 @@ def get_all_yacht(db: database, filters: YachtFilter = Depends()):
             yacht.picture=f"data:image/jpeg;base64,{picture}" if yacht.picture else None
         return YachtListResponse(yachts=pag_yachts, total_pages=total_pages, current_page=page)
     except Exception as e:
-        # raise HTTPException(status_code=500, detail="Internal server error")
-        raise e
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/{id}", response_model=Yacht)
@@ -93,3 +88,9 @@ def yacht_upload_image(id: int, picture: UploadFile, db: database):
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
+@router.get("/{id}/active-rents", response_model=List[RentDates])
+def get_active_rents_for_yacht(id: int, db: database):
+    try:
+        return RentView.get_active_rents(db, id)
+    except ex.ModelNotFound as e:
+        raise e

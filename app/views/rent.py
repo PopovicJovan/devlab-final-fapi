@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_ , or_
 from app.models.rent import Rent
 from app.models.user import User
-from app.schemas.rent import RentCreate, Rent
+from app.schemas.rent import RentCreate
 from app.views.yacht import YachtView
 import app.exceptions as exc
 
@@ -20,15 +22,15 @@ class RentView:
             select(Rent).where(
                 Rent.yacht_id == rent_data.yacht_id,
                 or_(
-                    Rent.start_date.between(rent_data.start_date, rent_data.end_date),
-                    Rent.end_date.between(rent_data.start_date, rent_data.end_date),
+                    and_(Rent.start_date <= rent_data.end_date, Rent.end_date >= rent_data.start_date),
+                    and_(Rent.start_date <= rent_data.end_date, Rent.end_date >= rent_data.start_date),
                     and_(Rent.start_date <= rent_data.start_date, Rent.end_date >= rent_data.end_date)
                 )
             )
-        ).scalar_one_or_none()
+        ).first()
 
         if overlapping_rent:
-            raise ValueError("The yacht is already rented for the selected dates!")
+            raise exc.NotAvailable("The yacht is already rented for the selected dates!")
 
         start_date = rent_data.start_date
         end_date = rent_data.end_date
@@ -36,11 +38,13 @@ class RentView:
 
         total_price = days * yacht.rent_price
         user_id=current_user.id
-        new_rent = Rent(**rent_data.model_dump(),user_id=user_id, total_price=total_price)
+        new_rent = Rent(
+            yacht_id=rent_data.yacht_id, start_date=rent_data.start_date,
+            end_date=rent_data.end_date,user_id=user_id,
+            total_price=total_price
+        )
         db.add(new_rent)
-        db.commit()
-        db.refresh(new_rent)
-        return Rent.model_validate(new_rent)
+        return new_rent
     
 
     @classmethod
@@ -61,4 +65,9 @@ class RentView:
             raise RuntimeError("An unexpected error occurred while canceling the rent")
 
 
-
+    @classmethod
+    def get_active_rents(cls, db: Session, yacht_id: int):
+        return db.execute(select(Rent).where(
+            Rent.yacht_id == yacht_id,
+            Rent.end_date >= datetime.now().date()
+        )).scalars().all()

@@ -19,6 +19,8 @@ class UserWithSalesAndRents(User):
     sales: List[Sale] = []
     rents: List[Rent] = []
 
+
+
 from app.schemas.sale import Sale
 from app.schemas.rent import Rent
 Sale.model_rebuild()

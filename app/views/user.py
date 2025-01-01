@@ -64,3 +64,14 @@ class UserView:
             raise exc.ForbidenException(detail="You are not admin")
         return True
 
+    @classmethod
+    def get_all_users(cls, db: Session):
+        return db.query(User).all()
+
+
+    @classmethod
+    def get_user_by_id(cls, db: Session, id: int):
+        user = db.query(User).filter(User.id == id).first()
+        if user is None:
+            raise exc.UserNotFound
+        return user
