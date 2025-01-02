@@ -61,3 +61,21 @@ def get_user_by_id(db: database, id: int):
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.delete("/{id}", response_model=None, dependencies=[Depends(is_admin)])
+def ban_user(db: database, id: int):
+    try:
+        UserView.ban_user(db, id)
+    except (exc.UserNotFound, exc.ForbidenException) as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.post("/{id}/admin", response_model=None, dependencies=[Depends(is_admin)])
+def add_admin_permission(db: database, id: int):
+    try:
+        UserView.add_admin(db, id)
+    except (exc.UserNotFound) as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")

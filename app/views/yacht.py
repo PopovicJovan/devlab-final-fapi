@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models import Yacht, Model
+from sqlalchemy import or_, and_, not_, exists
+from app.models import Yacht, Model, Rent
 from app.schemas.yacht import YachtCreate, YachtUpdate, YachtFilter
 from app.views.model import ModelView
 from app.views.status import StatusView
@@ -28,15 +29,21 @@ class YachtView:
 
     @classmethod
     def yacht_update(cls, db: Session, id: int, yachtData: YachtUpdate) -> Yacht:
-        try: yacht = cls.get_yacht_by_id(db, id)
-        except ex.ModelNotFound as e: raise e
+        try:
+            yacht = cls.get_yacht_by_id(db, id)
+        except ex.ModelNotFound as e:
+            raise e
 
         if yachtData.status_id:
-            try: StatusView.get_status_by_id(db, yachtData.status_id)
-            except ex.ModelNotFound as e: raise e
+            try:
+                StatusView.get_status_by_id(db, yachtData.status_id)
+            except ex.ModelNotFound as e:
+                raise e
         if yachtData.model_id:
-            try: ModelView.get_model_by_id(db, yachtData.model_id)
-            except ex.ModelNotFound as e: raise e
+            try:
+                ModelView.get_model_by_id(db, yachtData.model_id)
+            except ex.ModelNotFound as e:
+                raise e
 
         yachtData = yachtData.model_dump(exclude_none=True)
         for key, value in yachtData.items():
@@ -51,7 +58,7 @@ class YachtView:
         return yacht
 
     @classmethod
-    def get_all_yacht(cls, db: Session, filters:YachtFilter) -> list[Yacht]:
+    def get_all_yacht(cls, db: Session, filters: YachtFilter) -> list[Yacht]:
         name = filters.name
         model_id = filters.model_id
         minLength = filters.minLength
@@ -60,6 +67,9 @@ class YachtView:
         maxWidth = filters.maxWidth
         minPrice = filters.minPrice
         maxPrice = filters.maxPrice
+        sort_by = filters.sort_by.name
+        startDate = filters.startDate
+        endDate = filters.endDate
 
         query = db.query(Yacht)
         if name:
@@ -78,6 +88,32 @@ class YachtView:
             query = query.filter(Yacht.sale_price >= minPrice)
         if maxPrice:
             query = query.filter(Yacht.sale_price <= maxPrice)
+        if startDate and endDate:
+            query = query.filter(
+                not_(
+                    exists().where(
+                        and_(
+                            Rent.yacht_id == Yacht.id,
+                            Rent.start_date <= endDate,
+                            Rent.end_date >= startDate
+                        )
+                    )
+                )
+            )
+
+        if sort_by:
+            if "available_for_rent" == sort_by:
+                query = query.filter(or_(Yacht.status_id == StatusView.get_status(db, "available for rent").id,
+                                         Yacht.status_id == StatusView.get_status(db,
+                                                                                  "available for rent and sale").id))
+            if "available_for_sale" == sort_by:
+                query = query.filter(or_(Yacht.status_id == StatusView.get_status(db, "available for sale").id,
+                                         Yacht.status_id == StatusView.get_status(db,
+                                                                                  "available for rent and sale").id))
+            if "price_asc" == sort_by:
+                query = query.order_by(Yacht.sale_price.asc())
+        else:
+            query = query.order_by(Yacht.sale_price.desc())
         return query.all()
 
     @classmethod

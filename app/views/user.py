@@ -75,3 +75,22 @@ class UserView:
         if user is None:
             raise exc.UserNotFound
         return user
+
+    @classmethod
+    def ban_user(cls, db: Session, id: int) -> None:
+        try:
+            user = cls.get_user_by_id(db, id)
+            if user.admin:
+                raise exc.ForbidenException(detail="You can't ban an admin")
+            user.soft_delete()
+            db.commit()
+        except exc.UserNotFound as e:
+            raise e
+    @classmethod
+    def add_admin(cls, db: Session, id: int) -> None:
+        try:
+            user = cls.get_user_by_id(db, id)
+            user.admin = True
+            db.commit()
+        except exc.UserNotFound as e:
+            raise e

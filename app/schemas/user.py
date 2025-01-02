@@ -14,6 +14,7 @@ class User(BaseModel):
     picture: Optional[str] = None
     admin: bool
     created_at: datetime
+    deleted_at: Optional[datetime] = None
 
 class UserWithSalesAndRents(User):
     sales: List[Sale] = []

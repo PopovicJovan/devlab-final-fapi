@@ -23,7 +23,6 @@ class RentView:
                 Rent.yacht_id == rent_data.yacht_id,
                 or_(
                     and_(Rent.start_date <= rent_data.end_date, Rent.end_date >= rent_data.start_date),
-                    and_(Rent.start_date <= rent_data.end_date, Rent.end_date >= rent_data.start_date),
                     and_(Rent.start_date <= rent_data.start_date, Rent.end_date >= rent_data.end_date)
                 )
             )

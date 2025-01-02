@@ -1,12 +1,9 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 from pydantic import BaseModel, ConfigDict
 from datetime import date, datetime
-
-from sqlalchemy import Integer
-
 from app.schemas.model import Model
 from app.schemas.status import Status
-
+import enum
 
 class YachtBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -46,6 +43,12 @@ class YachtListResponse(BaseModel):
     total_pages: int = 0
     yachts: List[Yacht]
 
+class SortType(enum.Enum):
+    price_asc = "price_asc"
+    price_desc = "price_desc"
+    available_for_rent = "available_for_rent"
+    available_for_sale = "available_for_sale"
+
 class YachtFilter(BaseModel):
     name: Optional[str] = ""
     model_id: Optional[str] = None
@@ -56,3 +59,6 @@ class YachtFilter(BaseModel):
     maxWidth: Optional[float] = 100
     minPrice: Optional[float] = 0
     maxPrice: Optional[float] = 10**10
+    sort_by: Optional[SortType] = "price_desc"
+    startDate: Optional[datetime] = None
+    endDate: Optional[datetime] = None

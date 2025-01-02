@@ -64,8 +64,8 @@ def get_all_yacht(db: database, filters: YachtFilter = Depends()):
             yacht.picture=f"data:image/jpeg;base64,{picture}" if yacht.picture else None
         return YachtListResponse(yachts=pag_yachts, total_pages=total_pages, current_page=page)
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
-
+        # raise HTTPException(status_code=500, detail="Internal server error")
+        raise e
 
 @router.get("/{id}", response_model=Yacht)
 def get_yacht(id: int, db: database):
