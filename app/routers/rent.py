@@ -22,20 +22,16 @@ def create_rent(rent_data: RentCreate, db: database, token: Annotated[str, Depen
         return rent
     except (exc.TokenExpired, exc.InvalidToken, exc.ModelNotFound, exc.NotAvailable) as e:
         raise e
-    # except Exception:
-    #     raise HTTPException(status_code=500, detail="Internal server error")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Internal server error")
     
-@router.delete("/{rent_id}", response_model=None)
+@router.delete("/{rent_id}", response_model=None, status_code=204)
 def cancel_rent(rent_id: int, db: database, token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         current_user = UserView.get_user_by_token(db, token)
         RentView.cancel_rent(db, rent_id, current_user)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except PermissionError as e:
-        raise HTTPException(status_code=403, detail=str(e))
-    except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except (exc.TokenExpired, exc.InvalidToken, exc.ModelNotFound, exc.ForbidenException) as e:
+        raise e
     except Exception:
         raise HTTPException(status_code=500, detail="Internal server error")
     

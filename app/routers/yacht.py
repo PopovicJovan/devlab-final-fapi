@@ -47,7 +47,6 @@ def yacht_delete(id: int, db: database):
     try:
         YachtView.yacht_delete(db, id)
         db.commit()
-        return None
     except ex.ModelNotFound as e:
         raise e
 

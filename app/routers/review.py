@@ -23,10 +23,10 @@ def create_review(review_data: ReviewCreate, db: database, token: Annotated[str,
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.delete("/{review_id}", response_model=str)
+@router.delete("/{review_id}", response_model=None, status_code=204)
 def delete_review(review_id: int, db: database, token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         current_user=UserView.get_user_by_token(db, token)
-        return ReviewView.delete_review(db, review_id, current_user)
+        ReviewView.delete_review(db, review_id, current_user)
     except (exc.TokenExpired, exc.InvalidToken, exc.ModelNotFound, PermissionError) as e:
         raise e

@@ -62,7 +62,7 @@ def get_user_by_id(db: database, id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
 
-@router.delete("/{id}", response_model=None, dependencies=[Depends(is_admin)])
+@router.delete("/{id}", response_model=None, dependencies=[Depends(is_admin)], status_code=204)
 def ban_user(db: database, id: int):
     try:
         UserView.ban_user(db, id)

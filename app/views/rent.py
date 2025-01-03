@@ -48,20 +48,15 @@ class RentView:
 
     @classmethod
     def cancel_rent(cls, db: Session, rent_id: int, current_user: User) -> str:
-        try:
-            rent = db.execute(select(Rent).where(Rent.id == rent_id)).scalar_one_or_none()
-            if not rent:
-                raise ValueError(f"Rent with ID {rent_id} not found.")
-            if rent.user_id != current_user.id and not current_user.admin:
-                raise PermissionError("You do not have permission to cancel this rent")
+        rent = db.execute(select(Rent).where(Rent.id == rent_id)).scalar_one_or_none()
+        if not rent:
+            raise exc.ModelNotFound("Rent with that id not found!")
+        if rent.user_id != current_user.id and not current_user.admin:
+            raise exc.ForbidenException("You do not have permission to do it!")
 
-            db.delete(rent)
-            db.commit()
-        except ValueError as ve:
-            raise ve 
-        except Exception as e:
-            print(f"Error in cancel_rent: {e}")
-            raise RuntimeError("An unexpected error occurred while canceling the rent")
+        db.delete(rent)
+        db.commit()
+
 
 
     @classmethod
