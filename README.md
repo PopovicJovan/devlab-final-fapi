@@ -1,7 +1,7 @@
 # FastAPI API Project
 
 
-# Rent-a-Yacht API
+# Rent & Sell Yacht API
 
 This project is an API for renting and selling yachts. The API allows users to register accounts, book yachts, leave reviews, view available yachts, sell yachts, and manage their user data. Administrative access is also enabled to manage users, yachts, and bookings.
 
